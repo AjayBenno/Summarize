@@ -17,51 +17,18 @@ var queryInfo = {
 };
 
 chrome.tabs.query(queryInfo, function(tabs) {
-  // chrome.tabs.query invokes the callback with a list of tabs that match the
-  // query. When the popup is opened, there is certainly a window and at least
-  // one tab, so we can safely assume that |tabs| is a non-empty array.
-  // A window can only have one active tab at a time, so the array consists of
-  // exactly one tab.
+  
   var tab = tabs[0];
-
-  // A tab is a plain object that provides information about the tab.
-  // See https://developer.chrome.com/extensions/tabs#type-Tab
   var url = tab.url;
-
-  // tab.url is only available if the "activeTab" permission is declared.
-  // If you want to see the URL of other tabs (e.g. after removing active:true
-  // from |queryInfo|), then the "tabs" permission is required to see their
-  // "url" properties.
   console.assert(typeof url == 'string', 'tab.url should be a string');
   console.log(url);
   callback(url);
 });
-
-// Most methods of the Chrome extension APIs are asynchronous. This means that
-// you CANNOT do something like this:
-//
-// var url;
-// chrome.tabs.query(queryInfo, function(tabs) {
-//   url = tabs[0].url;
-// });
-// alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
-
-/**
-* @param {string} searchTerm - Search term for Google Image search.
-* @param {function(string,number,number)} callback - Called when an image has
-*   been found. The callback gets the URL, width and height of the image.
-* @param {function(string)} errorCallback - Called when the image is not found.
-*   The callback gets a string that describes the failure reason.
-*/
-//From http://rest.elkstein.org/2008/02/using-rest-in-javascript.html
 function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
-
-function addToStorage(url) {
-  var toBeSaved = url;
-
 }
+
 /* Using Diffbot and Aylien
 document.addEventListener('DOMContentLoaded', function() {
 getCurrentTabUrl(function(url) {
@@ -113,15 +80,11 @@ getCurrentTabUrl(function(url) {
   
 });
 });*///change to use sentisum but only 50 calls per day so that sucks.
-var ttURL = 'http://textteaser.com/'
-var summary = ''
-var defaultCount = 5
-var paragBreak = 3
-var view = 0
-var max = 1
-document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
-  // Put the image URL in Google search.
+
+
+function updateInner(url){
+  var ttURL = 'http://textteaser.com/'
+  var summary = ''
   console.log('Summarizing this url: ' + url);
   //This calls the api and displays the results in a list.
   $.get(ttURL + "summary", {url: url, output: "json"}, "json")
@@ -143,16 +106,16 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }else{
       for(var i = 0;i<5;i++){
-         list.innerHTML += "<li>"+summary["sentences"][i]["sentence"]+"</li><br>"
-        console.log(summary["sentences"][i]["sentence"])
-      }
-    }
-  }else{
-    console.log("fuck");
-    list.innerHTML +="<div class=row><li>Something went wrong!</li></div><br>"
-  }
+       list.innerHTML += "<li>"+summary["sentences"][i]["sentence"]+"</li><br>"
+       console.log(summary["sentences"][i]["sentence"])
+     }
+   }
+ }else{
+  console.log("fuck");
+  list.innerHTML +="<div class=row><li>Something went wrong!</li></div><br>"
+}
 
-  })
+})
   .fail(function(data) {
     if (data.responseJSON == null) {
       $('#init').empty();
@@ -163,7 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
       $('#init').empty();
       $('#init').append(data.responseJSON.error);
     }     
+  });  
+}
+function updateExtension(){
+  getCurrentTabUrl(function(url){
+    updateInner(url);
   });
-  
-});
-});
+}
+document.addEventListener('DOMContentLoaded', updateExtension);
+//If you want to change what is displayed call updateInner with
+//url of what you want.
