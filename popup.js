@@ -67,13 +67,14 @@ function getFromDictonaryStorage(){
           for(var i=0;i<cell.length;i++){
             cell[i].addEventListener('click',function(e){
               updateInner(e.target.innerHTML);
-            },false);
+            }
+            ,false);
           }
           // document.getElementById(i).addEventListener('click', function(){
           //   alert(i);
           // });
-        }
-      });
+    }
+  });
     }
   });
 
@@ -174,7 +175,7 @@ function updateInner(url){
        console.log(summary["sentences"][i]["sentence"])
      }
    }
-   list.innerHTML+="<li><a class=waves-effect waves-light btn href="+url+">Go to Article!</a></li>";
+   list.innerHTML+="<li><a id=gotoart class=waves-effect waves-light btn href="+url+">Go to Article!</a></li>";
  }else{
   console.log("fuck");
   list.innerHTML +="<div class=row><li>Something went wrong!</li></div><br>"
@@ -197,6 +198,11 @@ function updateExtension(){
   getCurrentTabUrl(function(url){
     updateInner(url);
   });
+  document.getElementById("clear").addEventListener('click',function(){
+    chrome.storage.sync.clear();
+    getFromDictonaryStorage();
+  },false);
+
   
 }
 document.addEventListener('DOMContentLoaded', updateExtension);
