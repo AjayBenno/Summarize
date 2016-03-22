@@ -11,15 +11,21 @@
 $(document).ready(function(){
   $(".dropdown-button").dropdown();
 }); //Activates Dropdown
+function goToUrl(urls){
+  console.log(urls);
+  chrome.browserAction.onClicked.addListener(function(activeTab){
+    var newURL = urls;
+    chrome.tabs.create({ url: newURL });
+  });
+}
 function getCurrentTabUrl(callback) {
-// Query filter to be passed to chrome.tabs.query - see
-// https://developer.chrome.com/extensions/tabs#method-query
-var queryInfo = {
-  active: true,
-  currentWindow: true
-};
 
-chrome.tabs.query(queryInfo, function(tabs) {
+  var queryInfo = {
+   active: true,
+   currentWindow: true
+ };
+
+ chrome.tabs.query(queryInfo, function(tabs) {
 
   var tab = tabs[0];
   var url = tab.url;
@@ -46,8 +52,8 @@ function addToDictionaryStorage(url) {
       if(jQuery.inArray(url,arr["data"]) == -1){
         console.log(arr["data"]);
         console.log(url);
+        console.log("addagain");
         arr["data"].push(url);
-
         chrome.storage.sync.set({"data":arr["data"]});
       }
     });
@@ -61,78 +67,29 @@ function getFromDictonaryStorage(){
       chrome.storage.sync.get("data",function(arr){
         var dataElem = arr["data"];
         var dropd = document.getElementById('collectionID');
+        dropd.innerHTML = "";
+        //Lines 71-81 make the prevoius links added and update the view if clicked.
         for(var i = 0; i < arr["data"].length;i++){
+          console.log(i);
           dropd.innerHTML += "<li><button id="+i+" class=previousLinks>"+dataElem[i]+"</button></li>";
-          var cell =document.querySelectorAll('.previousLinks');
-          for(var i=0;i<cell.length;i++){
-            cell[i].addEventListener('click',function(e){
-              updateInner(e.target.innerHTML);
-            }
-            ,false);
+        } var cell =document.querySelectorAll('.previousLinks');
+        for(var i=0;i<cell.length;i++){
+          cell[i].addEventListener('click',function(e){
+            updateInner(e.target.innerHTML);
           }
-          // document.getElementById(i).addEventListener('click', function(){
-          //   alert(i);
-          // });
-    }
-  });
+          ,false);
+        }
+
+
+
+
+      });
     }
   });
 
 }
-/* Using Diffbot and Aylien
-document.addEventListener('DOMContentLoaded', function() {
-getCurrentTabUrl(function(url) {
-  // Put the image URL in Google search.
-  var res = new XMLHttpRequest();
-  
 
-  var text="";
-  var title="";
-
-  var diffBot = new XMLHttpRequest();
-  var diffBotUrl = "https://diffbot-diffbot.p.mashape.com/v2/article?token=f82fd0a7be83f7669a31221df46f35dd&fields=text%2Ctitle&timeout=15000&url="+url;
-
-  diffBot.open("GET",diffBotUrl);
-  diffBot.onreadystatechange=function() {
-    if(diffBot.readyState==4){
-      var diffBotReturnObj = JSON.parse(diffBot.responseText);
-      text = diffBotReturnObj["text"];
-      title= diffBotReturnObj["title"];
-      var newurl = 'https://api.aylien.com/api/v1/summarize?text='+text+'&title='+title; 
-      res.open("GET", newurl);
-      res.setRequestHeader('Accept','application/json');
-      res.setRequestHeader('X-AYLIEN-TextAPI-Application-Key','4c08897c91044cccf31d6a5aa4291036');
-      res.setRequestHeader('X-AYLIEN-TextAPI-Application-ID','876cb926');
-      res.send();
-    }
-    
-  };
-  diffBot.setRequestHeader("Accept","application/json");
-  diffBot.setRequestHeader("X-Mashape-Key", "yUGG18jZvUmshueA2PQVlnWHLcZCp1yKcS8jsn0xolpDUTYf1i");   
-  diffBot.send();
-  res.onreadystatechange=function() {
-   if (res.readyState == 4) {
-    console.log(text);
-    console.log(title);
-    var stuff = document.getElementById('stuff');
-      var string = JSON.parse(res.responseText);//JSON.stringify(res.responseText);
-      for(var i = 0;i<string["sentences"].length;i++){
-        console.log(string["sentences"][i]);
-
-      }
-     // console.log(string["sentences"]);
-     stuff.innerHTML = string["sentences"];
-   }
-   else{
-    console.log(res.status);
-  }
-};
-  
-});
-});*///change to use sentisum but only 50 calls per day so that sucks.
-
-
-function updateInner(url){
+function updateInner(url){  
   addToDictionaryStorage(url);
   getFromDictonaryStorage();
   var ttURL = 'http://textteaser.com/'
@@ -175,13 +132,23 @@ function updateInner(url){
        console.log(summary["sentences"][i]["sentence"])
      }
    }
-   list.innerHTML+="<li><a id=gotoart class=waves-effect waves-light btn href="+url+">Go to Article!</a></li>";
+   list.innerHTML+="<li><a id=gotoart class="+"gotoart"+" href="+url+">Go to Article!</a></li>";
  }else{
   console.log("fuck");
   list.innerHTML +="<div class=row><li>Something went wrong!</li></div><br>"
 }
+        //This part makes the links open a new tab
+        var links = document.getElementsByTagName("a");
+        for (var i = 0; i < links.length; i++) {
+          var ln = links[i];
+          var location = ln.href;
+          console.log(ln + location);
+          ln.addEventListener('click',function () {
+            chrome.tabs.create({active: true, url: location});
+          });
+        }
 
-})
+      })
 .fail(function(data) {
   if (data.responseJSON == null) {
     $('#init').empty();
@@ -198,13 +165,20 @@ function updateExtension(){
   getCurrentTabUrl(function(url){
     updateInner(url);
   });
+  $(document).ready(function(){
+    $('.collapsible').collapsible({
+      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    });
+  });
   document.getElementById("clear").addEventListener('click',function(){
     chrome.storage.sync.clear();
     getFromDictonaryStorage();
   },false);
-
-  
 }
+
+
+
+
 document.addEventListener('DOMContentLoaded', updateExtension);
 
 //If you want to change what is displayed call updaeInner with
