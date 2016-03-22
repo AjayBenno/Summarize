@@ -34,9 +34,13 @@
     <script src="popup.js"></script>
   </head>
   <body>
+    <ul id="dropdown1" class="dropdown-content"></ul>
     <nav>
       <div class="nav-wrapper">
       <a href="#" class="brand-logo center">Summarizer</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Previous analyzed<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
       </div>
     </nav>
 
@@ -47,8 +51,9 @@
         </div>
 
       </div>
-      <div class="chip">Jane Doe</div>
+    <ul class="collection" id="collectionID"></ul>
     </div>
+
 
   </body>
   </html>
