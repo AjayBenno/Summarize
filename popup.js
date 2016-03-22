@@ -61,17 +61,21 @@ function getFromDictonaryStorage(){
       chrome.storage.sync.get("data",function(arr){
         var dataElem = arr["data"];
         var dropd = document.getElementById('collectionID');
-
         for(var i = 0; i < arr["data"].length;i++){
-          dropd.innerHTML += "<li><button class=collection onclick=clickME>"+dataElem[i]+"</button></li>";
+          dropd.innerHTML += "<li><button id="+i+" class=previousLinks>"+dataElem[i]+"</button></li>";
+          var cell =document.querySelectorAll('.previousLinks');
+          for(var i=0;i<cell.length;i++){
+            cell[i].addEventListener('click',function(e){
+              updateInner(e.target.innerHTML);
+            },false);
+          }
+          // document.getElementById(i).addEventListener('click', function(){
+          //   alert(i);
+          // });
         }
-
-
-     });
+      });
     }
   });
-  
- return (function(){ return 10;});
 
 }
 /* Using Diffbot and Aylien
@@ -193,7 +197,9 @@ function updateExtension(){
   getCurrentTabUrl(function(url){
     updateInner(url);
   });
+  
 }
 document.addEventListener('DOMContentLoaded', updateExtension);
+
 //If you want to change what is displayed call updaeInner with
 //url of what you want.
