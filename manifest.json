@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Summarizer",
+  "description": "This extension summarizes a news article and stores it in local data for later acesss.",
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "sum.png",
     "default_popup": "popup.html"
   },
   "permissions": [

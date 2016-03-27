@@ -172,6 +172,9 @@ function updateExtension(){
   });
   document.getElementById("clear").addEventListener('click',function(){
     chrome.storage.sync.clear();
+    getCurrentTabUrl(function(url){
+      updateInner(url);
+    });
     getFromDictonaryStorage();
   },false);
 }
