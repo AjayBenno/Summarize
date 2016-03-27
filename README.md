@@ -4,9 +4,10 @@
 Summarizer is an application that will take the current news article that you are currently looking at and after clicking the chrome extension, will summarize the article into 5 concisces sentences. It also stores the previous analyzed articles and can acess them by merely clicking on the button below. 
 
 ##How I made it
-I first started with the google template for chrome extensions. This was my first time writing javascript and my first time building a chrome extension so using the google documentaiton helped alot! 
+I first started with the google template for chrome extensions. This was my first time writing javascript and my first time building a chrome extension so using the google documentaiton helped alot!
+
 ###Libraries and API's
-For libraries and api's i used the textTeaser api. TextTeaser is a natural language processing api that can summarize web pages so I acessed the api and used it for the meat of my application. I also used Materialize.css as the css framework for my project as I needed a quick and easy way to style it and Mateiralize fit that description perfectly.
+For libraries and api's i used the textTeaser api. [TextTeaser](http://textteaser.com/) is a natural language processing api that can summarize web pages so I acessed the api and used it for the meat of my application. I also used [Materialize.css](http://materializecss.com/) as the css framework for my project as I needed a quick and easy way to style it and Mateiralize fit that description perfectly.
 
 ##Screenshots of the app Working
 ![myimage-alt-tag](images/first.jpg)
