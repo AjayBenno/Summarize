@@ -22,3 +22,6 @@ As of right now the New York Times does not display on my application. The reaso
 ##Planned Changes
 I would like to implement the New York Times to work. I also would like to make it so that if a previous link button was clicked, then the extension would then transition to a tile based page and you would be able to click a previous article you already analyzed.
 
+##How to run the app
+Drag and Drop the CRX file into the the chrome://extensions page and hit install. Then navigate to any article(a good website is the washington post) and click the extension!
+
